@@ -1,0 +1,1 @@
+<resources><string name="app_name">Focus Guard</string><string name="accessibility_description">Checks foreground app and visible browser text against your locally stored block rules.</string></resources>
