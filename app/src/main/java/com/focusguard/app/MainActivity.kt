@@ -122,7 +122,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 @Composable private fun RowScope.Quick(label:String, icon: androidx.compose.ui.graphics.vector.ImageVector, click:()->Unit) {
-    Card(Modifier.weight(1f), onClick=click, colors=CardDefaults.cardColors(containerColor=Color.White)) { Column(Modifier.fillMaxWidth().padding(12.dp), horizontalAlignment=Alignment.CenterHorizontally) { Icon(icon,null,tint=Blue); Text(label,fontSize=11.sp,color=Ink) } }
+    Card(onClick=click, modifier=Modifier.weight(1f), colors=CardDefaults.cardColors(containerColor=Color.White)) { Column(Modifier.fillMaxWidth().padding(12.dp), horizontalAlignment=Alignment.CenterHorizontally) { Icon(icon,null,tint=Blue); Text(label,fontSize=11.sp,color=Ink) } }
 }
 @Composable private fun ModesPage(open:(String)->Unit) { Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement=Arrangement.spacedBy(12.dp)) { Text("Modes",fontSize=24.sp,fontWeight=FontWeight.Bold); listOf("All Apps","All Sites","Manage Keywords","Notification Blocking","PURESHIELD AI","Create New Profile","Choose Blocking Type","Choose Blocking Condition","Study Timer","Blocking Schedule","Location Blocking","Strict Mode","Block Reels/Shorts","Take a Break").forEach { MenuRow(it){open(it)} } } }
 @Composable private fun MenuRow(title:String, onClick:()->Unit) { Card(onClick=onClick, colors=CardDefaults.cardColors(containerColor=Color.White)) { Row(Modifier.fillMaxWidth().padding(17.dp), verticalAlignment=Alignment.CenterVertically) { Text(title,Modifier.weight(1f),fontWeight=FontWeight.Medium); Icon(Icons.Default.ChevronRight,null,tint=Color.Gray) } } }
@@ -137,7 +137,7 @@ class MainActivity : ComponentActivity() {
             val label=ctx.packageManager.getApplicationLabel(app).toString(); val checked=if(store.isWhitelistMode()) app.packageName in store.allowedApps() else store.blockedApps().contains(app.packageName)
             Row(Modifier.fillMaxWidth().clickable { if(store.isWhitelistMode()){if(checked) store.removeAllowedApp(app.packageName) else store.addAllowedApp(app.packageName)}else{if(checked) store.removeApp(app.packageName) else store.addApp(app.packageName)}; tick++; changed() }.padding(vertical=9.dp), verticalAlignment=Alignment.CenterVertically) {
                 val icon = remember(app.packageName) { ctx.packageManager.getApplicationIcon(app) }
-                androidx.compose.foundation.Image(androidx.compose.ui.graphics.asImageBitmap(icon.toBitmapSafe()), contentDescription=null, modifier=Modifier.size(34.dp))
+                androidx.compose.foundation.Image(icon.toBitmapSafe().asImageBitmap(), contentDescription=null, modifier=Modifier.size(34.dp))
                 Column(Modifier.weight(1f).padding(start=12.dp)) { Text(label,fontWeight=FontWeight.Medium,color=Ink); Text(if(checked) { if(store.isWhitelistMode()) "Allowed" else "Blocked" } else { if(store.isWhitelistMode()) "Tap to allow" else "Tap to block" },fontSize=11.sp,color=Color.Gray) }
                 IconButton(onClick={limitTarget=app}) { Icon(Icons.Default.MoreVert,null,tint=Color.Gray) }
                 Checkbox(checked=checked,onCheckedChange={if(store.isWhitelistMode()){if(it)store.addAllowedApp(app.packageName) else store.removeAllowedApp(app.packageName)}else{if(it)store.addApp(app.packageName) else store.removeApp(app.packageName)};tick++;changed()})
@@ -282,7 +282,7 @@ private fun android.graphics.drawable.Drawable.toBitmapSafe(): android.graphics.
     Column(Modifier.fillMaxSize().padding(16.dp)) {
         Text("Choose Blocking Type",fontSize=22.sp,fontWeight=FontWeight.Bold,color=Ink)
         listOf("Blocklist" to "Selected apps, websites, and keywords are blocked.", "Whitelist" to "Only apps you explicitly allow can be opened while the schedule is active.").forEach { (title,desc) ->
-            Card(Modifier.fillMaxWidth().padding(top=12.dp),onClick={store.setWhitelistMode(title=="Whitelist");next("Choose Blocking Condition")},colors=CardDefaults.cardColors(containerColor=Color.White)) { Column(Modifier.padding(18.dp)){Text(title,fontWeight=FontWeight.Bold);Text(desc,color=Color.Gray,fontSize=12.sp);Text(if(store.isWhitelistMode()==(title=="Whitelist"))"Selected" else "Select",fontSize=11.sp,color=Blue,modifier=Modifier.padding(top=8.dp))} }
+            Card(modifier=Modifier.fillMaxWidth().padding(top=12.dp),onClick={store.setWhitelistMode(title=="Whitelist");next("Choose Blocking Condition")},colors=CardDefaults.cardColors(containerColor=Color.White)) { Column(Modifier.padding(18.dp)){Text(title,fontWeight=FontWeight.Bold);Text(desc,color=Color.Gray,fontSize=12.sp);Text(if(store.isWhitelistMode()==(title=="Whitelist"))"Selected" else "Select",fontSize=11.sp,color=Blue,modifier=Modifier.padding(top=8.dp))} }
         }
     }
 }
@@ -302,7 +302,7 @@ private fun android.graphics.drawable.Drawable.toBitmapSafe(): android.graphics.
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)) {
         Text("Choose Blocking Condition",fontSize=21.sp,fontWeight=FontWeight.Bold,color=Ink)
         Text("Pick a method to apply the restrictions.",fontSize=12.sp,color=Color.Gray)
-        options.forEach { (title,desc) -> Card(Modifier.fillMaxWidth().padding(top=9.dp),onClick={next(if(title=="Location")"Location Blocking" else if(title=="Usage Limit")"All Apps" else "Blocking Schedule")},colors=CardDefaults.cardColors(containerColor=Color.White)) { Column(Modifier.padding(14.dp)){Text(title,fontWeight=FontWeight.SemiBold);Text(desc,fontSize=12.sp,color=Color.Gray)} } }
+        options.forEach { (title,desc) -> Card(modifier=Modifier.fillMaxWidth().padding(top=9.dp),onClick={next(if(title=="Location")"Location Blocking" else if(title=="Usage Limit")"All Apps" else "Blocking Schedule")},colors=CardDefaults.cardColors(containerColor=Color.White)) { Column(Modifier.padding(14.dp)){Text(title,fontWeight=FontWeight.SemiBold);Text(desc,fontSize=12.sp,color=Color.Gray)} } }
     }
 }
 @Composable private fun AnalyticsPage(ctx:Context) {

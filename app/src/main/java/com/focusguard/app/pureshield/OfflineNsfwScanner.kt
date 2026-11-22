@@ -154,7 +154,7 @@ class OfflineNsfwScanner(private val context: Context) : AutoCloseable {
             val outputName = model.outputNames.firstOrNull()
                 ?: throw IllegalStateException("AI model has no output tensor")
             model.run(mapOf(inputName to tensor)).use { output ->
-                val logits = output[outputName].value as Array<FloatArray>
+                val logits = output[outputName].orElseThrow().value as Array<FloatArray>
                 require(logits.isNotEmpty() && logits[0].size >= 2) { "Unexpected model output shape" }
                 val probabilities = softmax(logits[0])
                 val nsfw = probabilities[0]
